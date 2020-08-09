@@ -2,7 +2,7 @@
   "name": "ts-quicksort",
   "version": "1.0.0",
   "description": "Quicksort benchmark in TypeScript",
-  "main": "index.js",
+  "main": "quicksort.js",
   "scripts": {
     "start": "tsc index.ts && node index.js ../unsorted.csv ../sorted.csv"
   },

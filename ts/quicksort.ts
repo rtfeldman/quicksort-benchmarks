@@ -2,7 +2,7 @@ const fs = require("fs");
 const assert = require("assert").strict;
 
 function quicksort(arr) {
-  return quicksortHelp(arr, 0, arr.length - 1);
+  quicksortHelp(arr, 0, arr.length - 1);
 }
 
 function quicksortHelp(arr, low, high) {
@@ -12,8 +12,6 @@ function quicksortHelp(arr, low, high) {
     quicksortHelp(arr, low, partitionIndex - 1);
     quicksortHelp(arr, partitionIndex + 1, high);
   }
-
-  return arr;
 }
 
 function partition(arr, pivotIndex, low, high) {
