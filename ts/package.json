@@ -1,0 +1,11 @@
+{
+  "name": "ts-quicksort",
+  "version": "1.0.0",
+  "description": "Quicksort benchmark in TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Richard Feldman",
+  "license": "Apache-2.0"
+}
