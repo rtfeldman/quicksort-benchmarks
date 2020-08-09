@@ -47,19 +47,17 @@ public class Quicksort {
         }
     }
 
-    private static List<Long> quicksort(List<Long> arr) {
-        return quicksortHelp(arr, 0, arr.size() - 1);
+    private static void quicksort(List<Long> arr) {
+        quicksortHelp(arr, 0, arr.size() - 1);
     }
 
-    private static List<Long> quicksortHelp(List<Long> arr, int low, int high) {
+    private static void quicksortHelp(List<Long> arr, int low, int high) {
         if (low < high) {
             int partitionIndex = partition(arr, high, low, high);
 
             quicksortHelp(arr, low, partitionIndex - 1);
             quicksortHelp(arr, partitionIndex + 1, high);
         }
-
-        return arr;
     }
 
     private static int partition(List<Long> arr, int pivotIndex, int low, int high) {
