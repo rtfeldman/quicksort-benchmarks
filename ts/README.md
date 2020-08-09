@@ -1,6 +1,6 @@
-# TypeScript benchmark
+# TypeScript Quicksort Benchmark
 
-To run:
+To run from this directory:
 
 ```
 $ npm install
@@ -8,4 +8,4 @@ $ npm start
 ```
 
 At the end, it will print how many nanoseconds the quicksort function took
-to sort the 1 million numbers in `nums.csv`.
+to sort the 1 million numbers in `unsorted.csv`.

@@ -1,4 +1,5 @@
 const fs = require("fs");
+const assert = require("assert").strict;
 
 function quicksort(arr) {
   return quicksortHelp(arr, 0, arr.length - 1);
@@ -37,18 +38,19 @@ function swap(arr, i, j) {
   arr[j] = old;
 }
 
-let filename = process.argv[2];
+let unsortedFilename = process.argv[2];
+let sortedFilename = process.argv[3];
 
-if (filename == null) {
+if (unsortedFilename == null || sortedFilename == null) {
   console.log(
-    "This script takes 1 argument: the file of comma-separated numbers."
+    "This program takes 2 arguments: the file of unsorted comma-separated numbers, and the file of sorted numbers."
   );
 
   process.exit();
 }
 
 let nums = fs
-  .readFileSync(filename, { encoding: "utf8" })
+  .readFileSync(unsortedFilename, { encoding: "utf8" })
   .split(",")
   .map(BigInt);
 
@@ -59,4 +61,18 @@ quicksort(nums);
 const endNs = process.hrtime.bigint();
 
 console.log("Sorted:", nums);
-console.log("Total time spent in the quicksort function: " + (endNs - startNs) + " ns");
+
+let sorted = fs
+  .readFileSync(sortedFilename, { encoding: "utf8" })
+  .split(",")
+  .map(BigInt);
+
+assert.deepEqual(
+  nums,
+  sorted,
+  "Quicksort did not produce the expected sorted numbers!"
+);
+
+console.log(
+  "Total time spent in the quicksort function: " + (endNs - startNs) + " ns"
+);
