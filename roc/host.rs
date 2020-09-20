@@ -7,7 +7,7 @@ use std::time::SystemTime;
 extern "C" {
     #[allow(improper_ctypes)]
     #[link_name = "quicksort#1"]
-    fn quicksort(list: Box<[i64]>) -> Box<[i64]>;
+    fn quicksort(list: Box<[f64]>) -> Box<[f64]>;
 }
 
 pub fn main() {
@@ -25,13 +25,13 @@ pub fn main() {
     let nums = contents
         .split(",")
         .map(|string| {
-            string.trim().parse::<i64>().unwrap_or_else(|err| {
+            string.trim().parse::<f64>().unwrap_or_else(|err| {
                 panic!("Invalid number: {:?} - error was: {:?}", string, err)
             })
         })
-        .collect::<Vec<i64>>();
+        .collect::<Vec<f64>>();
 
-    let nums: Box<[i64]> = nums.into();
+    let nums: Box<[f64]> = nums.into();
 
     println!("Running Roc quicksort on {} numbers...", nums.len());
     let start_time = SystemTime::now();

@@ -1,71 +1,73 @@
 package main
 
-import "strconv"
-import "io/ioutil"
-import "fmt"
-import "time"
-import "strings"
+import (
+	"fmt"
+	"io/ioutil"
+	"strconv"
+	"strings"
+	"time"
+)
 
-func quicksort(arr []int64) {
-    quicksortHelp(arr, 0, len(arr) - 1);
+func quicksort(arr []float64) {
+	quicksortHelp(arr, 0, len(arr)-1)
 }
 
-func quicksortHelp(arr []int64, low int, high int) {
-    if low < high {
-        var partitionIndex int = partition(arr, high, low, high)
+func quicksortHelp(arr []float64, low int, high int) {
+	if low < high {
+		var partitionIndex int = partition(arr, high, low, high)
 
-        quicksortHelp(arr, low, partitionIndex - 1);
-        quicksortHelp(arr, partitionIndex + 1, high);
-    }
+		quicksortHelp(arr, low, partitionIndex-1)
+		quicksortHelp(arr, partitionIndex+1, high)
+	}
 }
 
-func partition(arr []int64, pivotIndex int, low int, high int) int {
-    var partitionIndex int = low;
+func partition(arr []float64, pivotIndex int, low int, high int) int {
+	var partitionIndex int = low
 
-    for i := low; i < high; i++ {
-        if arr[i] < arr[pivotIndex] {
-            swap(arr, i, partitionIndex);
-            partitionIndex++;
-        }
-    }
+	for i := low; i < high; i++ {
+		if arr[i] < arr[pivotIndex] {
+			swap(arr, i, partitionIndex)
+			partitionIndex++
+		}
+	}
 
-    swap(arr, high, partitionIndex);
+	swap(arr, high, partitionIndex)
 
-    return partitionIndex;
+	return partitionIndex
 }
 
-func swap(arr []int64, i int, j int) {
-    var old int64 = arr[i];
+func swap(arr []float64, i int, j int) {
+	var old float64 = arr[i]
 
-    arr[i] = arr[j];
-    arr[j] = old;
+	arr[i] = arr[j]
+	arr[j] = old
 }
 
 func main() {
-  text, err := ioutil.ReadFile("../unsorted.csv")
+	text, err := ioutil.ReadFile("../unsorted.csv")
 
-  if err != nil {
-      panic(err)
-  }
+	if err != nil {
+		panic(err)
+	}
 
-  strs := strings.Split(string(text), ",")
-  nums := []int64{}
+	strs := strings.Split(string(text), ",")
+	nums := []float64{}
 
-  for i := 0; i < len(strs); i++ {
-    num, err := strconv.ParseInt(strs[i], 10, 64)
+	for i := 0; i < len(strs); i++ {
+		num, err := strconv.ParseFloat(strs[i], 64)
 
-    if err != nil {
-        panic(err)
-    }
+		if err != nil {
+			panic(err)
+		}
 
-    nums = append(nums, num)
-  }
+		nums = append(nums, num)
+	}
 
-  start := time.Now()
-  quicksort(nums);
-  end := time.Now()
+	start := time.Now()
+	quicksort(nums)
+	end := time.Now()
 
-  elapsed := end.Sub(start)
+	elapsed := end.Sub(start)
 
-	fmt.Println("Finished quicksorting", len(nums), "numbers in", elapsed);
+	fmt.Println("Finished quicksorting", len(nums), "numbers in", elapsed)
 }

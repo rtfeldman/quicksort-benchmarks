@@ -8,14 +8,14 @@
 #include <iterator>
 using namespace std;
 
-void swap(vector<long long> &arr, ptrdiff_t i, ptrdiff_t j) {
+void swap(vector<double> &arr, ptrdiff_t i, ptrdiff_t j) {
     long long old = arr[i];
 
     arr[i] = arr[j];
     arr[j] = old;
 }
 
-ptrdiff_t partition(vector<long long> &arr, ptrdiff_t pivot_index, ptrdiff_t low, ptrdiff_t high) {
+ptrdiff_t partition(vector<double> &arr, ptrdiff_t pivot_index, ptrdiff_t low, ptrdiff_t high) {
     ptrdiff_t partition_index = low;
 
     for (ptrdiff_t i = low; i < high; i++) {
@@ -30,7 +30,7 @@ ptrdiff_t partition(vector<long long> &arr, ptrdiff_t pivot_index, ptrdiff_t low
     return partition_index;
 }
 
-void quicksort_help(vector<long long> &arr, ptrdiff_t low, ptrdiff_t high) {
+void quicksort_help(vector<double> &arr, ptrdiff_t low, ptrdiff_t high) {
     if (low < high) {
         ptrdiff_t partition_index = partition(arr, high, low, high);
 
@@ -39,7 +39,7 @@ void quicksort_help(vector<long long> &arr, ptrdiff_t low, ptrdiff_t high) {
     }
 }
 
-void quicksort(vector<long long> &arr) {
+void quicksort(vector<double> &arr) {
     quicksort_help(arr, 0, arr.size() - 1);
 }
 
@@ -50,7 +50,7 @@ int main ()
 
   if (file.is_open())
   {
-      vector<long long> nums;
+      vector<double> nums;
 
       getline(file, text);
 
@@ -60,7 +60,7 @@ int main ()
       std::string token;
 
       while (std::getline(ss, token, ',') && nums.size() < 1000000) {
-          nums.push_back(atol(token.c_str()));
+          nums.push_back(stod(token));
       }
 
       cout << "Quicksorting " << nums.size() << " numbers..." << endl;

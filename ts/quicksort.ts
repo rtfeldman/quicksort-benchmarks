@@ -50,7 +50,7 @@ if (unsortedFilename == null || sortedFilename == null) {
 let nums = fs
   .readFileSync(unsortedFilename, { encoding: "utf8" })
   .split(",")
-  .map(BigInt);
+  .map(Number);
 
 console.log("Unsorted:", nums);
 
@@ -63,7 +63,7 @@ console.log("Sorted:", nums);
 let sorted = fs
   .readFileSync(sortedFilename, { encoding: "utf8" })
   .split(",")
-  .map(BigInt);
+  .map(Number);
 
 assert.deepEqual(
   nums,
