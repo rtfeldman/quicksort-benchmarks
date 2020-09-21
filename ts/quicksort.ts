@@ -52,13 +52,14 @@ let nums = fs
   .split(",")
   .map(Number);
 
-console.log("Unsorted:", nums);
 
 const startNs = process.hrtime.bigint();
 quicksort(nums);
 const endNs = process.hrtime.bigint();
 
-console.log("Sorted:", nums);
+console.log(
+  "Finished quicksorting " + nums.length + " numbers in " + (Number(endNs - startNs)/1e6).toFixed(3) + "ms"
+);
 
 let sorted = fs
   .readFileSync(sortedFilename, { encoding: "utf8" })
@@ -71,6 +72,3 @@ assert.deepEqual(
   "Quicksort did not produce the expected sorted numbers!"
 );
 
-console.log(
-  "Total time spent in the quicksort function: " + (endNs - startNs) + " ns"
-);

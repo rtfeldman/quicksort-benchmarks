@@ -1,13 +1,11 @@
-# Quicksort
+# Roc Quicksort Benchmark
 
-To run:
+To run from this directory:
 
-```bash
-$ roc run Quicksort.roc
+```
+$ roc build --optimize Quicksort.roc
+$ ./app ../unsorted.csv ../sorted.csv
 ```
 
-To run in roc release mode instead, do:
-
-```bash
-$ roc run --optimize Quicksort.roc
-```
+At the end, it will print how many milliseconds the quicksort function took
+to sort the 1 million numbers in `unsorted.csv`.

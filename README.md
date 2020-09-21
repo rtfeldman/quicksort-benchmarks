@@ -11,3 +11,4 @@ Some goals:
 1. Use a straightforward quicksort implementation - like one that might appear in a textbook, not a performance-tuned one.
 2. Only measure time spent in the quicksorting function itself, to eliminate differences due to VM startup times and such
 3. Read the numbers from a file, and process them as 64-bit floats, so in all languages we're working with 64-bit floats stored on the heap.
+4. Read the numbers from `sorted.csv` and ensure that the answer was computed correctly.

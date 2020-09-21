@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -44,30 +46,48 @@ func swap(arr []float64, i int, j int) {
 }
 
 func main() {
-	text, err := ioutil.ReadFile("../unsorted.csv")
+	args := os.Args
+	if len(args) < 3 {
+		fmt.Println("This program takes 2 arguments: the file of unsorted comma-separated numbers, and the file of sorted numbers.")
+		os.Exit(1)
+	}
 
+	unsortedText, err := ioutil.ReadFile(args[1])
 	if err != nil {
 		panic(err)
 	}
 
-	strs := strings.Split(string(text), ",")
-	nums := []float64{}
-
+	strs := strings.Split(string(unsortedText), ",")
+	var nums []float64
 	for i := 0; i < len(strs); i++ {
 		num, err := strconv.ParseFloat(strs[i], 64)
-
 		if err != nil {
 			panic(err)
 		}
-
 		nums = append(nums, num)
 	}
 
 	start := time.Now()
 	quicksort(nums)
-	end := time.Now()
+	elapsed := time.Since(start)
 
-	elapsed := end.Sub(start)
+	fmt.Printf("Finished quicksorting %d numbers in %.3fms\n", len(nums), float64(elapsed.Nanoseconds())/1e6)
 
-	fmt.Println("Finished quicksorting", len(nums), "numbers in", elapsed)
+	sortedText, err := ioutil.ReadFile(args[2])
+	if err != nil {
+		panic(err)
+	}
+	strs = strings.Split(string(sortedText), ",")
+	var sortedNums []float64
+	for i := 0; i < len(strs); i++ {
+		num, err := strconv.ParseFloat(strs[i], 64)
+		if err != nil {
+			panic(err)
+		}
+		sortedNums = append(sortedNums, num)
+	}
+
+	if !reflect.DeepEqual(nums, sortedNums) {
+		fmt.Println("Quicksort did not produce the expected sorted numbers!")
+	}
 }

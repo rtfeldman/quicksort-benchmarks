@@ -1,9 +1,9 @@
-# C++ Quicksort Benchmark
+# Go Quicksort Benchmark
 
 To run from this directory:
 
 ```
-$ clang++ -O3 quicksort.cpp -o quicksort && ./quicksort ../unsorted.csv ../sorted.csv
+$ go run main.go ../unsorted.csv ../sorted.csv
 ```
 
 At the end, it will print how many milliseconds the quicksort function took
