@@ -23,35 +23,38 @@ public class Quicksort {
 
         try {
             String text = String.join("", Files.readAllLines(unsortedFile, charset));
-            List<Long> nums = new ArrayList<Long>();
+            List<Double> nums = new ArrayList<Double>();
 
             for (String textNum : Arrays.asList(text.split(","))) {
-                nums.add(Long.parseLong(textNum));
+                nums.add(Double.parseDouble(textNum));
             }
 
             long startTimeNs = System.nanoTime();
             quicksort(nums);
             long endTimeNs = System.nanoTime();
+	        System.out.printf("Finished quicksorting %d numbers in %.3fms\n", nums.size() , (endTimeNs - startTimeNs)/1e6);
 
             text = String.join("", Files.readAllLines(sortedFile, charset));
-            List<Long> sortedNums = new ArrayList<Long>();
+            List<Double> sortedNums = new ArrayList<Double>();
 
             for (String textNum : Arrays.asList(text.split(","))) {
-                sortedNums.add(Long.parseLong(textNum));
+                sortedNums.add(Double.parseDouble(textNum));
+            }
+            if(!nums.equals(sortedNums)){
+                System.out.println("Quicksort did not produce the expected sorted numbers!");
             }
 
-            System.out.println("Sorted in: " + (endTimeNs - startTimeNs) + " ns");
         } catch (IOException ex) {
             System.out.println("IOException: " + ex);
             System.exit(1);
         }
     }
 
-    private static void quicksort(List<Long> arr) {
+    private static void quicksort(List<Double> arr) {
         quicksortHelp(arr, 0, arr.size() - 1);
     }
 
-    private static void quicksortHelp(List<Long> arr, int low, int high) {
+    private static void quicksortHelp(List<Double> arr, int low, int high) {
         if (low < high) {
             int partitionIndex = partition(arr, high, low, high);
 
@@ -60,7 +63,7 @@ public class Quicksort {
         }
     }
 
-    private static int partition(List<Long> arr, int pivotIndex, int low, int high) {
+    private static int partition(List<Double> arr, int pivotIndex, int low, int high) {
         int partitionIndex = low;
 
         for (int i = low; i < high; i++) {
@@ -75,8 +78,8 @@ public class Quicksort {
         return partitionIndex;
     }
 
-    private static void swap(List<Long> arr, int i, int j) {
-        long old = arr.get(i);
+    private static void swap(List<Double> arr, int i, int j) {
+        double old = arr.get(i);
 
         arr.set(i, arr.get(j));
         arr.set(j, old);
