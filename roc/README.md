@@ -3,6 +3,9 @@
 To run from this directory:
 
 ```
+$ cd platform
+$ CARGO_NET_GIT_FETCH_WITH_CLI=true cargo build --release
+$ cd ..
 $ roc build --optimize Quicksort.roc
 $ ./app ../unsorted.csv ../sorted.csv
 ```
