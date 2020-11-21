@@ -1,7 +1,8 @@
 app Quicksort provides [ quicksort ] imports []
 
 quicksort = \originalList ->
-    quicksortHelp : List Float, Int, Int -> List Float
+
+    quicksortHelp : List (Num a), Int, Int -> List (Num a)
     quicksortHelp = \list, low, high ->
         if low < high then
             when partition low high list is
@@ -24,7 +25,7 @@ quicksort = \originalList ->
             _ ->
                 []
 
-    partition : Int, Int, List Float -> [ Pair Int (List Float) ]
+    partition : Int, Int, List (Num a) -> [ Pair Int (List (Num a)) ]
     partition = \low, high, initialList ->
         when List.get initialList high is
             Ok pivot ->
@@ -36,7 +37,7 @@ quicksort = \originalList ->
                 Pair (low - 1) initialList
 
 
-    partitionHelp : Int, Int, List Float, Int, Float -> [ Pair Int (List Float) ]
+    partitionHelp : Int, Int, List (Num a), Int, (Num a) -> [ Pair Int (List (Num a)) ]
     partitionHelp = \i, j, list, high, pivot ->
         if j < high then
             when List.get list j is
