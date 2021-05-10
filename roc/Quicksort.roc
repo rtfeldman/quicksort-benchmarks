@@ -1,8 +1,10 @@
-app Quicksort provides [ quicksort ] imports []
+app "quicksort"
+    packages { base: "platform" }
+    imports []
+    provides [ quicksort ] to base
 
 quicksort = \originalList ->
-
-    quicksortHelp : List (Num a), Int, Int -> List (Num a)
+    quicksortHelp : List (Num a), Nat, Nat -> List (Num a)
     quicksortHelp = \list, low, high ->
         if low < high then
             when partition low high list is
@@ -13,8 +15,7 @@ quicksort = \originalList ->
         else
             list
 
-
-    swap : Int, Int, List a -> List a
+    swap : Nat, Nat, List a -> List a
     swap = \i, j, list ->
         when Pair (List.get list i) (List.get list j) is
             Pair (Ok atI) (Ok atJ) ->
@@ -25,7 +26,7 @@ quicksort = \originalList ->
             _ ->
                 []
 
-    partition : Int, Int, List (Num a) -> [ Pair Int (List (Num a)) ]
+    partition : Nat, Nat, List (Num a) -> [ Pair Nat (List (Num a)) ]
     partition = \low, high, initialList ->
         when List.get initialList high is
             Ok pivot ->
@@ -36,8 +37,7 @@ quicksort = \originalList ->
             Err _ ->
                 Pair (low - 1) initialList
 
-
-    partitionHelp : Int, Int, List (Num a), Int, (Num a) -> [ Pair Int (List (Num a)) ]
+    partitionHelp : Nat, Nat, List (Num c), Nat, (Num c) -> [ Pair Nat (List (Num c)) ]
     partitionHelp = \i, j, list, high, pivot ->
         if j < high then
             when List.get list j is
@@ -52,7 +52,5 @@ quicksort = \originalList ->
         else
             Pair i list
 
-
-
-    n = List.len originalList 
+    n = List.len originalList
     quicksortHelp originalList 0 (n - 1)
