@@ -24,7 +24,7 @@ quicksort = \originalList ->
                     |> List.set j atI
 
             _ ->
-                []
+                list
 
     partition : Nat, Nat, List (Num a) -> [ Pair Nat (List (Num a)) ]
     partition = \low, high, initialList ->
