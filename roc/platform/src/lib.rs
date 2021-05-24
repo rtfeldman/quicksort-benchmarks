@@ -1,5 +1,6 @@
 #![allow(non_snake_case)]
 
+use core::ffi::c_void;
 use roc_std::{RocCallResult, RocList};
 use std::alloc::Layout;
 use std::env;
@@ -12,6 +13,30 @@ use std::time::SystemTime;
 extern "C" {
     #[link_name = "roc__mainForHost_1_exposed"]
     fn quicksort(list: RocList<f64>, output: &mut RocCallResult<RocList<f64>>) -> ();
+
+    fn malloc(size: usize) -> *mut c_void;
+    fn realloc(c_ptr: *mut c_void, size: usize) -> *mut c_void;
+    fn free(c_ptr: *mut c_void);
+}
+
+#[no_mangle]
+pub unsafe fn roc_alloc(_alignment: u32, size: usize) -> *mut c_void {
+    return malloc(size);
+}
+
+#[no_mangle]
+pub unsafe fn roc_realloc(
+    _alignment: u32,
+    c_ptr: *mut c_void,
+    _old_size: usize,
+    new_size: usize,
+) -> *mut c_void {
+    return realloc(c_ptr, new_size);
+}
+
+#[no_mangle]
+pub unsafe fn roc_dealloc(_alignment: u32, c_ptr: *mut c_void) {
+    return free(c_ptr);
 }
 
 #[no_mangle]
