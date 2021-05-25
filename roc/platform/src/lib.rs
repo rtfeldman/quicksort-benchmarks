@@ -1,4 +1,8 @@
-use roc_std::RocList;
+#![allow(non_snake_case)]
+
+use core::ffi::c_void;
+use roc_std::{RocCallResult, RocList};
+use std::alloc::Layout;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
@@ -7,8 +11,32 @@ use std::process;
 use std::time::SystemTime;
 
 extern "C" {
-    #[link_name = "quicksort_1"]
-    fn quicksort(list: RocList<f64>) -> RocList<f64>;
+    #[link_name = "roc__mainForHost_1_exposed"]
+    fn quicksort(list: RocList<f64>, output: &mut RocCallResult<RocList<f64>>) -> ();
+
+    fn malloc(size: usize) -> *mut c_void;
+    fn realloc(c_ptr: *mut c_void, size: usize) -> *mut c_void;
+    fn free(c_ptr: *mut c_void);
+}
+
+#[no_mangle]
+pub unsafe fn roc_alloc(size: usize, _alignment: u32) -> *mut c_void {
+    return malloc(size);
+}
+
+#[no_mangle]
+pub unsafe fn roc_realloc(
+    c_ptr: *mut c_void,
+    new_size: usize,
+    _old_size: usize,
+    _alignment: u32,
+) -> *mut c_void {
+    return realloc(c_ptr, new_size);
+}
+
+#[no_mangle]
+pub unsafe fn roc_dealloc(c_ptr: *mut c_void, _alignment: u32) {
+    return free(c_ptr);
 }
 
 #[no_mangle]
@@ -38,11 +66,21 @@ pub fn rust_main() -> isize {
         .collect::<Vec<f64>>();
 
     let nums = RocList::from_slice(&nums);
-
+    use std::mem::MaybeUninit;
+    let mut output = MaybeUninit::uninit();
+    let output_ptr = unsafe { &mut *output.as_mut_ptr() };
     let start_time = SystemTime::now();
-    let answer = unsafe { quicksort(nums) };
+    unsafe {
+        quicksort(nums, output_ptr);
+    }
     let end_time = SystemTime::now();
     let duration = end_time.duration_since(start_time).unwrap();
+    let answer = unsafe {
+        match output.assume_init().into() {
+            Ok(value) => value,
+            Err(msg) => panic!("roc failed with message {}", msg),
+        }
+    };
 
     println!(
         "Finished quicksorting {} numbers in {:.3}ms",

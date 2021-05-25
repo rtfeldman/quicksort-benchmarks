@@ -4,22 +4,18 @@
 name = "host"
 version = "0.1.0"
 dependencies = [
- "roc_std 0.1.0 (git+https://github.com/rtfeldman/roc?branch=trunk)",
+ "roc_std",
 ]
 
 [[package]]
 name = "libc"
-version = "0.2.79"
+version = "0.2.92"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "56d855069fafbb9b344c0f962150cd2c1187975cb1c22c1522c240d8c4986714"
 
 [[package]]
 name = "roc_std"
 version = "0.1.0"
-source = "git+https://github.com/rtfeldman/roc?branch=trunk#9acfa8d0d49979dcd1a490914e546ab18993e875"
 dependencies = [
- "libc 0.2.79 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc",
 ]
-
-[metadata]
-"checksum libc 0.2.79 (registry+https://github.com/rust-lang/crates.io-index)" = "2448f6066e80e3bfc792e9c98bf705b4b0fc6e8ef5b43e5889aff0eaa9c58743"
-"checksum roc_std 0.1.0 (git+https://github.com/rtfeldman/roc?branch=trunk)" = "<none>"
