@@ -1,27 +1,25 @@
 #![allow(non_snake_case)]
 
 use core::ffi::c_void;
-use roc_std::{RocCallResult, RocList};
-use std::alloc::Layout;
+use libc;
+use roc_std::RocList;
 use std::env;
+use std::ffi::CStr;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
+use std::os::raw::c_char;
 use std::process;
 use std::time::SystemTime;
 
 extern "C" {
     #[link_name = "roc__mainForHost_1_exposed"]
-    fn quicksort(list: RocList<f64>, output: &mut RocCallResult<RocList<f64>>) -> ();
-
-    fn malloc(size: usize) -> *mut c_void;
-    fn realloc(c_ptr: *mut c_void, size: usize) -> *mut c_void;
-    fn free(c_ptr: *mut c_void);
+    fn quicksort(list: RocList<f64>) -> RocList<f64>;
 }
 
 #[no_mangle]
 pub unsafe fn roc_alloc(size: usize, _alignment: u32) -> *mut c_void {
-    return malloc(size);
+    libc::malloc(size)
 }
 
 #[no_mangle]
@@ -31,12 +29,25 @@ pub unsafe fn roc_realloc(
     _old_size: usize,
     _alignment: u32,
 ) -> *mut c_void {
-    return realloc(c_ptr, new_size);
+    libc::realloc(c_ptr, new_size)
 }
 
 #[no_mangle]
 pub unsafe fn roc_dealloc(c_ptr: *mut c_void, _alignment: u32) {
-    return free(c_ptr);
+    libc::free(c_ptr)
+}
+
+#[no_mangle]
+pub unsafe fn roc_panic(c_ptr: *mut c_void, tag_id: u32) {
+    match tag_id {
+        0 => {
+            let slice = CStr::from_ptr(c_ptr as *const c_char);
+            let string = slice.to_str().unwrap();
+            eprintln!("Roc hit a panic: {}", string);
+            std::process::exit(1);
+        }
+        _ => todo!(),
+    }
 }
 
 #[no_mangle]
@@ -46,6 +57,7 @@ pub fn rust_main() -> isize {
         println!("This program takes 2 arguments: the file of unsorted comma-separated numbers, and the file of sorted numbers.");
         process::exit(1);
     }
+
     let unsorted_file = File::open(args[1].clone()).expect("error loading unsorted file");
 
     let mut contents = String::new();
@@ -56,7 +68,7 @@ pub fn rust_main() -> isize {
         .expect("error reading unsorted file to string");
 
     let nums = contents
-        .split(",")
+        .split(',')
         .map(|string| {
             string
                 .trim()
@@ -65,22 +77,11 @@ pub fn rust_main() -> isize {
         })
         .collect::<Vec<f64>>();
 
-    let nums = RocList::from_slice(&nums);
-    use std::mem::MaybeUninit;
-    let mut output = MaybeUninit::uninit();
-    let output_ptr = unsafe { &mut *output.as_mut_ptr() };
+    let nums = RocList::from_slice(&nums[..1_000_000]);
     let start_time = SystemTime::now();
-    unsafe {
-        quicksort(nums, output_ptr);
-    }
+    let answer = unsafe { quicksort(nums) };
     let end_time = SystemTime::now();
     let duration = end_time.duration_since(start_time).unwrap();
-    let answer = unsafe {
-        match output.assume_init().into() {
-            Ok(value) => value,
-            Err(msg) => panic!("roc failed with message {}", msg),
-        }
-    };
 
     println!(
         "Finished quicksorting {} numbers in {:.3}ms",
@@ -97,7 +98,7 @@ pub fn rust_main() -> isize {
         .expect("error reading sorted file to string");
 
     let sorted_nums = contents
-        .split(",")
+        .split(',')
         .map(|string| {
             string
                 .trim()

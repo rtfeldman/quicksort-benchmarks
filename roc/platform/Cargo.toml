@@ -10,5 +10,6 @@ crate-type = ["staticlib"]
 
 [dependencies]
 roc_std = { path = "../../../roc/roc_std" }
+libc = "0.2"
 
 [workspace]
