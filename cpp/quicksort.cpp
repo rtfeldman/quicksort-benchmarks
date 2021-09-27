@@ -9,39 +9,39 @@
 #include <vector>
 using namespace std;
 
-template<class T>
-void swap(std::vector<T>& arr, size_t i1, size_t i2)
-{
-  T buff = arr[i1];
-  arr[i1] = arr[i2];
-  arr[i2] = buff;
+void swap(vector<double> &arr, ptrdiff_t i, ptrdiff_t j) {
+  long long old = arr[i];
+
+  arr[i] = arr[j];
+  arr[j] = old;
 }
 
-template<class T>
-size_t partition(std::vector<T>& arr, size_t lo, size_t hi, size_t pi)
-{
-  swap(arr, pi, hi);
-  T pv = arr[hi];
-  size_t si=lo;
-  for (size_t i=lo; i<hi; ++i) {
-    if (arr[i] < pv) {
-      swap(arr, i, si++);
+ptrdiff_t partition(vector<double> &arr, ptrdiff_t pivot_index, ptrdiff_t low,
+                    ptrdiff_t high) {
+  ptrdiff_t partition_index = low;
+
+  for (ptrdiff_t i = low; i < high; i++) {
+    if (arr[i] < arr[pivot_index]) {
+      swap(arr, i, partition_index);
+      partition_index++;
     }
   }
-  swap(arr, si, hi);
-  return si;
+
+  swap(arr, high, partition_index);
+
+  return partition_index;
 }
 
-template<class T>
-void qsort(std::vector<T>& arr, size_t lo, size_t hi)
-{
-  size_t n = hi-lo+1;
-  if (n < 2)
-    return;
-  size_t pi = partition(arr, lo, hi, lo + (hi-lo)/2);
-  qsort(arr, lo,   pi-1);
-  qsort(arr, pi+1, hi);
+void quicksort_help(vector<double> &arr, ptrdiff_t low, ptrdiff_t high) {
+  if (low < high) {
+    ptrdiff_t partition_index = partition(arr, high, low, high);
+
+    quicksort_help(arr, low, partition_index - 1);
+    quicksort_help(arr, partition_index + 1, high);
+  }
 }
+
+void quicksort(vector<double> &arr) { quicksort_help(arr, 0, arr.size() - 1); }
 
 int main(int argc, char **argv) {
   if (argc < 3) {
@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 
     std::chrono::high_resolution_clock::time_point start_time =
         std::chrono::high_resolution_clock::now();
-    qsort(nums, 0, nums.size() - 1);
+    quicksort(nums);
     std::chrono::high_resolution_clock::time_point end_time =
         std::chrono::high_resolution_clock::now();
 
