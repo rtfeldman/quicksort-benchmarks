@@ -26,9 +26,9 @@ struct Quicksort: ParsableCommand {
             from: NSNumber(value: unsortedNumbers.count),
             number: .decimal)
         
-        let startTime = CFAbsoluteTimeGetCurrent()
-        quickSort(input: &unsortedNumbers)
-        let elapsed  = (CFAbsoluteTimeGetCurrent() - startTime) * 1000
+        let startTime = DispatchTime.now().uptimeNanoseconds
+        quicksort(&unsortedNumbers)
+        let elapsed  = Double(DispatchTime.now().uptimeNanoseconds - startTime) / 1e+6
         
         let sortedNumbers = try numbers(from: sortedPath)
         guard sortedNumbers == unsortedNumbers else {
@@ -46,6 +46,8 @@ struct Quicksort: ParsableCommand {
                 return num
             }
     }
+    
+    // MARK: - Errors
     
     enum Error: Swift.Error, LocalizedError {
         case inputFileMissing(file: String)
@@ -65,8 +67,37 @@ struct Quicksort: ParsableCommand {
     }
 }
 
-func quickSort<T: Comparable>(input: inout [T]) {
-    input.sort()
-}
+// MARK: - Run
 
 Quicksort.main()
+
+// MARK: - Quicksort Functions
+
+public func quicksort<T: Comparable>(_ input: inout [T]) {
+    quicksortHelper(&input, low: input.startIndex, high: input.count - 1)
+}
+
+private func quicksortHelper<T: Comparable>(_ input: inout [T], low: Int, high: Int) {
+    guard low < high else { return }
+    
+    let partitionIndex = partition(&input, pivot: high, low: low, high: high)
+    quicksortHelper(&input, low: low, high: partitionIndex - 1)
+    quicksortHelper(&input, low: partitionIndex + 1, high: high)
+}
+
+private func partition<T: Comparable>(_ input: inout [T], pivot: Int, low: Int, high: Int) -> Int {
+    var partitionIndex = low
+    
+    for iter in low..<high {
+        guard input[iter] < input[pivot] else { continue }
+        swap(&input, iter, partitionIndex)
+        partitionIndex += 1
+    }
+    
+    swap(&input, high, partitionIndex)
+    return partitionIndex
+}
+
+private func swap<T>(_ input: inout [T], _ i: Int, _ j: Int) {
+    input.swapAt(i, j)
+}
