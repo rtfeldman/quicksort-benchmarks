@@ -3,7 +3,7 @@
 To run from this directory:
 
 ```
-$ swift run Quicksort ../unsorted.csv ../sorted.csv`
+$ swift run --configuration release Quicksort ../unsorted.csv ../sorted.csv
 ```
 
 At the end, it will print how many milliseconds the quicksort function took
