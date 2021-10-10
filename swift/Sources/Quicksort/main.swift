@@ -20,12 +20,7 @@ struct Quicksort: ParsableCommand {
             throw Error.inputFileMissing(file: sortedFilename)
         }
         
-        var unsortedNumbers = try String(contentsOf: unsortedPath)
-            .split(separator: ",")
-            .map { (input: String.SubSequence) throws -> Int in
-                guard let num = Int(input) else { throw Error.malformedValue(String(input)) }
-                return num
-            }
+        var unsortedNumbers = try numbers(from: unsortedPath)
         
         let formattedCount = NumberFormatter.localizedString(
             from: NSNumber(value: unsortedNumbers.count),
@@ -34,13 +29,28 @@ struct Quicksort: ParsableCommand {
         let startTime = CFAbsoluteTimeGetCurrent()
         quickSort(input: &unsortedNumbers)
         let elapsed  = (CFAbsoluteTimeGetCurrent() - startTime) * 1000
-
+        
+        let sortedNumbers = try numbers(from: sortedPath)
+        guard sortedNumbers == unsortedNumbers else {
+            throw Error.incorrectOutput
+        }
+        
         print("Finished quicksorting \(formattedCount) numbers in \(elapsed)ms")
+    }
+    
+    private func numbers(from file: URL) throws -> [Int] {
+        try String(contentsOf: file)
+            .split(separator: ",")
+            .map { (input: String.SubSequence) throws -> Int in
+                guard let num = Int(input) else { throw Error.malformedValue(String(input)) }
+                return num
+            }
     }
     
     enum Error: Swift.Error, LocalizedError {
         case inputFileMissing(file: String)
         case malformedValue(_: String)
+        case incorrectOutput
         
         var errorDescription: String? {
             switch self {
@@ -48,6 +58,8 @@ struct Quicksort: ParsableCommand {
                 return "File missing for: \(fileName)"
             case .malformedValue(let value):
                 return "Non integer value found: \(value)"
+            case .incorrectOutput:
+                return "Quicksort did not produce the expected sorted numbers!"
             }
         }
     }
