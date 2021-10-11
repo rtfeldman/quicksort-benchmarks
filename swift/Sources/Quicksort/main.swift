@@ -90,14 +90,10 @@ private func partition<T: Comparable>(_ input: inout [T], pivot: Int, low: Int, 
     
     for iter in low..<high {
         guard input[iter] < input[pivot] else { continue }
-        swap(&input, iter, partitionIndex)
+        input.swapAt(iter, partitionIndex)
         partitionIndex += 1
     }
     
-    swap(&input, high, partitionIndex)
+    input.swapAt(high, partitionIndex)
     return partitionIndex
-}
-
-private func swap<T>(_ input: inout [T], _ i: Int, _ j: Int) {
-    input.swapAt(i, j)
 }
