@@ -39,12 +39,17 @@ struct Quicksort: ParsableCommand {
     }
     
     private func numbers(from file: URL) throws -> [Int] {
+        var buffer = Array<Int>()
+        buffer.reserveCapacity(1_000_000)
+
         try String(contentsOf: file)
             .split(separator: ",")
-            .map { (input: String.SubSequence) throws -> Int in
+            .forEach { (input: String.SubSequence) throws -> Void in
                 guard let num = Int(input) else { throw Error.malformedValue(String(input)) }
-                return num
+                buffer.append(num)
             }
+
+        return buffer
     }
     
     // MARK: - Errors
