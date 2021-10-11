@@ -21,7 +21,14 @@ let package = Package(
             name: "Quicksort",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-            ]),
+            ]
+            // Un-comment for emitting LLVM IR
+//            , swiftSettings: [
+//                .unsafeFlags([
+//                    "-emit-ir",
+//                ])
+//            ]
+        ),
         .testTarget(
             name: "QuicksortTests",
             dependencies: ["Quicksort"]
