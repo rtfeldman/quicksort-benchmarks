@@ -49,14 +49,3 @@ partitionHelp = \i, j, list, high, pivot ->
 swap : Nat, Nat, List a -> List a
 swap = \i, j, list ->
     List.swap list i j
-
-# swap : Nat, Nat, List a -> List a
-# swap = \i, j, list ->
-#     when Pair (List.get list i) (List.get list j) is
-#         Pair (Ok atI) (Ok atJ) ->
-#             list
-#                 |> List.set i atJ
-#                 |> List.set j atI
-#
-#         _ ->
-#             list
